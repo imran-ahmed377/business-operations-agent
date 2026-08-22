@@ -1,10 +1,10 @@
 # Business Operations Agent
 
 This repository is being built incrementally from the architecture in
-[`MVP architecture.md`](MVP%20architecture.md). The current slice provides a
-FastAPI service with a health check, typed request models, and a minimal HTTP
-submission endpoint for a business question. It still does not investigate data,
-retrieve documents, or perform any business action.
+[`MVP architecture.md`](MVP%20architecture.md). The current slice adds a
+read-only sales comparison function that can measure current-vs-previous period
+differences. It still does not retrieve documents or perform business actions,
+but it does provide the first quantitative investigation capability.
 
 ## Setup
 
@@ -39,9 +39,10 @@ action execution occurs in this slice.
 Run the focused test:
 
 ```bash
-python -m pytest tests/test_health.py tests/test_models.py tests/test_requests_api.py
+python -m pytest tests/test_health.py tests/test_models.py tests/test_requests_api.py tests/test_sales_analysis.py
 ```
 
-Later chunks will add controlled sales data access, company-document evidence,
-recommendations, and approval-gated actions. Each capability will be tested and
-documented before the next one is introduced.
+The new sales comparison helper supports a first analysis pass for questions like
+"Why did our sales drop this month?" by calculating total sales change and the
+largest regional decrease between periods. Later chunks will add company-document
+evidence, recommendations, and approval-gated actions.
