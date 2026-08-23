@@ -20,7 +20,7 @@ This repository is the incremental MVP for a Business Operations Agent. Keep cha
 - Preserve existing public names and response shapes unless the architecture or a test requires a contract change.
 - Keep modules focused: HTTP wiring belongs in `app/main.py`; shared request and response contracts belong in `app/models.py`.
 - Use the standard library where it is sufficient. Add dependencies only when they provide clear value and update `pyproject.toml`.
-- Add a concise comment or docstring before every logical code chunk you write, including classes, functions, control-flow blocks, and configuration blocks. Explain the chunk's purpose or important decision; do not write comments for individual obvious statements or repeat the code verbatim.
+- For every code change you generate or modify, add a concise comment or docstring before each logical code chunk, including application code, tests, classes, functions, control-flow blocks, and configuration blocks. Explain the chunk's purpose, behavior, or important decision so another developer can understand why it exists. Do not add comments for individual obvious statements, repeat the code verbatim, or omit comments from a new chunk unless the surrounding code already documents that exact chunk clearly.
 
 ## Product boundaries
 
