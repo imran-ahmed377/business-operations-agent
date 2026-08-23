@@ -38,10 +38,15 @@ Submit a business question with a POST request to
 The service returns a request ID and either a `completed` result or a `failed`
 status. No document retrieval or action execution occurs in this slice.
 
+Sales data is seeded from [`data/sales.sql`](data/sales.sql) into
+`data/sales.db` on first use. The workflow reads only the allowlisted `current`
+and `previous` periods through `SalesDataStore`; unknown periods return no rows,
+and unsafe period values are rejected.
+
 Run the focused test:
 
 ```bash
-python -m pytest tests/test_health.py tests/test_models.py tests/test_requests_api.py tests/test_sales_analysis.py tests/test_orchestrator.py
+python -m pytest
 ```
 
 The new sales workflow supports a first analysis pass for questions like "Why

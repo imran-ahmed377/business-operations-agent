@@ -7,24 +7,16 @@ replace these fixtures with real data adapters and add document evidence retriev
 and approval-gated action execution.
 """
 
+from pathlib import Path
+
+from app.data_store import SalesDataStore
 from app.models import SalesInvestigationResult
 from app.sales_analysis import compare_sales_periods
 
 
-# Demo fixtures representing regional sales for the current and previous periods.
-# These are intentionally deterministic to ensure reproducible investigation results
-# while the data-retrieval layer remains a stub. A future chunk will replace these
-# fixtures with a production data adapter that connects to actual business systems.
-CURRENT_SALES = [
-    {"region": "North", "amount": 120_000},
-    {"region": "South", "amount": 95_000},
-    {"region": "West", "amount": 80_000},
-]
-PREVIOUS_SALES = [
-    {"region": "North", "amount": 150_000},
-    {"region": "South", "amount": 110_000},
-    {"region": "West", "amount": 90_000},
-]
+# The default store keeps local demo behavior reproducible while isolating data
+# access behind the same adapter a future production connector can implement.
+DEFAULT_DATASTORE = SalesDataStore(Path(__file__).parents[2] / "data" / "sales.db")
 
 
 def _is_sales_drop_question(question: str) -> bool:
@@ -84,7 +76,9 @@ def investigate_business_question(question: str) -> SalesInvestigationResult:
     # Compute measurable sales metrics by comparing the current period fixture
     # against the previous period fixture. This produces totals, deltas, and
     # identifies the region with the largest absolute decrease.
-    comparison = compare_sales_periods(CURRENT_SALES, PREVIOUS_SALES)
+    current_sales = DEFAULT_DATASTORE.get_sales_period("current")
+    previous_sales = DEFAULT_DATASTORE.get_sales_period("previous")
+    comparison = compare_sales_periods(current_sales, previous_sales)
     
     # Extract individual metrics from the comparison result for use in the response.
     # Casting ensures type safety and prevents downstream surprises.
