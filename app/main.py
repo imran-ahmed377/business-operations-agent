@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from fastapi import FastAPI
 
+from app.agent.orchestrator import investigate_business_question
 from app.models import BusinessRequest, RequestStatus, RequestStatusResponse
 
 app = FastAPI(
@@ -23,16 +24,28 @@ def health_check() -> dict[str, str]:
 
 @app.post("/requests", response_model=RequestStatusResponse, status_code=202, tags=["requests"])
 def submit_business_request(request: BusinessRequest) -> RequestStatusResponse:
-    """Accept a business question and return its initial lifecycle state.
+    """Investigate a supported question and return its request lifecycle state.
 
-    This slice intentionally does not investigate data or perform actions yet;
-    it only validates the input and acknowledges receipt.
+    The workflow remains synchronous and deterministic for this MVP. Unsupported
+    questions become explicit failures instead of receiving invented answers.
     """
 
+    request_id = uuid4()
+    created_at = datetime.now(UTC)
+
+    try:
+        result = investigate_business_question(request.question)
+    except ValueError as error:
+        return RequestStatusResponse(
+            request_id=request_id,
+            status=RequestStatus.FAILED,
+            created_at=created_at,
+            error=str(error),
+        )
+
     return RequestStatusResponse(
-        request_id=uuid4(),
-        status=RequestStatus.RECEIVED,
-        created_at=datetime.now(UTC),
-        result=None,
-        error=None,
+        request_id=request_id,
+        status=RequestStatus.COMPLETED,
+        created_at=created_at,
+        result=result.model_dump(),
     )

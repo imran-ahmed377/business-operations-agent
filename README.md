@@ -3,8 +3,10 @@
 This repository is being built incrementally from the architecture in
 [`MVP architecture.md`](MVP%20architecture.md). The current slice adds a
 read-only sales comparison function and a deterministic workflow for supported
-sales-drop questions. It still does not retrieve documents or perform business
-actions, and the HTTP submission route only acknowledges requests.
+sales-drop questions. The HTTP submission route now returns a completed,
+evidence-backed result for supported questions and an explicit failure for
+unsupported questions. It still does not retrieve documents or perform business
+actions.
 
 ## Setup
 
@@ -33,8 +35,8 @@ Submit a business question with a POST request to
 {"question": "Why did our sales drop this month?"}
 ```
 
-The service returns a request ID and a `received` status. No investigation or
-action execution occurs through HTTP yet.
+The service returns a request ID and either a `completed` result or a `failed`
+status. No document retrieval or action execution occurs in this slice.
 
 Run the focused test:
 
@@ -45,5 +47,5 @@ python -m pytest tests/test_health.py tests/test_models.py tests/test_requests_a
 The new sales workflow supports a first analysis pass for questions like "Why
 did our sales drop this month?" by calculating total sales change, identifying
 the largest regional decrease, and returning a recommendation grounded in that
-comparison. Later chunks will connect this workflow to HTTP and add
-company-document evidence and approval-gated actions.
+comparison. Later chunks will add company-document evidence and approval-gated
+actions.
