@@ -47,3 +47,11 @@ class RequestStatusResponse(BaseModel):
     created_at: datetime
     result: dict[str, object] | None = None
     error: str | None = None
+
+
+class SalesInvestigationResult(BaseModel):
+    """Evidence-backed result produced by the first sales workflow."""
+
+    answer: str
+    recommendation: str
+    evidence: dict[str, float | str]
